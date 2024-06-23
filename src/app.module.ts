@@ -48,8 +48,6 @@ import { redisStore } from 'cache-manager-redis-store';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         const redisConfig = configService.get('redis');
-        // const redisURL = `redis://${redisConfig.host}:${redisConfig.port}`;
-        // const store = await redisStore({ url: redisURL });
         const host = redisConfig.host;
         const port = redisConfig.port;
         return {

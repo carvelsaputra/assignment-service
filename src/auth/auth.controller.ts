@@ -12,6 +12,8 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthService } from './auth.service';
 import { User } from 'src/users/entities/user.entity';
+import { UsersResponseDto } from './dto/user-response.dto';
+import { plainToInstance } from 'class-transformer';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -30,7 +32,9 @@ export class AuthController {
   @Public()
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('/login')
-  login(@Body() body: LoginDto): Promise<User> {
-    return this.authService.login(body);
+  async login(@Body() body: LoginDto): Promise<UsersResponseDto> {
+    this.logger.log(`login accessed`);
+    const user = await this.authService.login(body);
+    return plainToInstance(UsersResponseDto, user);
   }
 }

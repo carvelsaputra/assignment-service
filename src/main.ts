@@ -1,6 +1,11 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  INestApplication,
+  Logger,
+  ValidationPipe,
+} from '@nestjs/common';
 import { InstanceLoader } from '@nestjs/core/injector/instance-loader';
 import { buildSwagger } from './swagger';
 
@@ -28,5 +33,17 @@ async function bootstrap() {
 
   logger.log(`serve on ${url}`);
   logger.log(`swagger on ${url}/docs`);
+}
+
+/**
+ *
+ * just in case we want to apply exclude to every endpoints
+ */
+export function registerGlobals(app: INestApplication) {
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector), {
+      // strategy: 'excludeAll',
+    }),
+  );
 }
 bootstrap();
